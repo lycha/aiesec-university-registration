@@ -1,0 +1,4 @@
+{    
+	"api_host" : "http://localhost/api”, 
+	"api_auth_token" : "your_api_token",
+}

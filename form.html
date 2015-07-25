@@ -1,0 +1,126 @@
+<form action="{path-manage_registration}" method="POST" class="regform signup-form" id="aiesec_university_form" accept-charset="UTF-8">
+<div class="signup-form-table">
+
+  <div class="form-group name">
+    <div class="input-name">Imię<span class="required">*</span></div>
+    <div class="input-field">
+      <input id="first_name" class="expa-input" type="text" maxlength="50" name="first_name" 
+      required 
+      oninvalid="this.setCustomValidity('Podaj swoje imię')" 
+      oninput="setCustomValidity('')">
+    </div>  
+  </div>
+
+  <div class="form-group name">
+    <div class="input-name">Nazwisko<span class="required">*</span></div>
+    <div class="input-field">
+      <input id="last_name" class="expa-input" type="text" name="last_name" maxlength="50"
+      required 
+      oninvalid="this.setCustomValidity('Podaj swoje nazwisko')" 
+      oninput="setCustomValidity('')"> 
+    </div>
+  </div>
+
+  <div class="form-group email">
+    <div class="input-name">Adres e-mail <span class="required">*</span></div>
+    <div class="input-field">
+      <input id="email" class="expa-input" type="text" name="email" maxlength="50"
+      required 
+      oninvalid="this.setCustomValidity('Podaj prawidłowy adres e-mail')" 
+      oninput="setCustomValidity('')" 
+      pattern="^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$">
+    </div>
+  </div>
+  <div class="form-group phone">
+    <div class="input-name">Numer telefonu dla szybszgo kontaktu</div>
+    <div class="input-field"> 
+      <input id="phone_number" class="expa-input" type="text" name="phone_number" maxlength="50"> 
+    </div>
+  </div>
+{languages}       
+<div class="form-group promo-code">
+    <div class="input-name">Kod promocyjny</div>
+    <div class="input-field">
+      <input id="promo_code" class="expa-input" type="text" name="promo_code" maxlength="50"> 
+    </div>
+</div>
+</div>
+
+<input type="hidden" name="utm_source" value="{utm_source}">
+<input type="hidden" name="utm_medium" value="{utm_medium}">
+<input type="hidden" name="utm_campaign" value="{utm_campaign}">
+<input type="hidden" name="program" value="{program}">
+<input type="hidden" name="uniqid" value="{uniqid}">
+<input type="hidden" name="bucket" value="{bucket}">
+<input type="hidden" name="lc" value="{lc}">
+<input type="hidden" name="localcommittee" value="{lc-form}">
+<input type="hidden" name="website_url" value="{website_url}">
+
+
+    <div id="error" class="error"><p></p></div>
+    <div id="submit">
+        <input type="submit" id="submit_button" name="submit" clicked="false" class="myButton send rotate lifted-25" value="Zapisz się!">
+    </div>
+</form>
+<div id="loader">
+<div class="spinner">
+  <div class="bounce1"></div>
+  <div class="bounce2"></div>
+  <div class="bounce3"></div>
+</div>
+</div>
+<p id="thank-you-message" class="form-message">Dziękujemy bardzo za rejestrację. Wkrótce skontaktujemy się z Tobą w celu potwierdzenia uczestnictwa w kursie!</p>
+<p id="error-message" class="form-message">Wystąpił błąd podczas rejestracji. Spróbuj później lub skontaktuj się z nami mailowo</p>
+
+<script type='text/javascript'>
+
+jQuery(document).ready(function($){
+    //saves cookie and sends API request to update DB
+    jQuery.ajax({
+            url: "{path-manage_leads}?utm_source={utm_source}&utm_medium={utm_medium}&utm_campaign={utm_campaign}&program={program}&bucket={bucket}&lc={lc}&uniqid={uniqid}",
+            async: false,
+            type: "GET"
+    });
+
+    //performs request to manage registration script
+    jQuery( '#aiesec_university_form' ).on( 'submit', function(e) {
+      e.preventDefault();
+      var values = jQuery(this).serialize();
+      jQuery.ajax({
+            url: "{path-manage_registration}",
+            data: values,
+            async: false,
+            type: "POST",
+            success: function(){
+                //alert("success");
+                $('#thank-you-message').show();
+                //$("#result").html('Submitted successfully');
+            },
+            error:function(){
+                //alert("failure");
+                $('#error-message').show();
+                //$("#result").html('There is error while submit');
+            },
+            beforeSend: function() {
+               $('#loader').show();
+               $('.form-message').hide();
+            },
+            complete: function(){
+               $('#loader').hide();
+            }
+      });
+    });
+});
+
+//manages drop downs in form to show language groups
+var staraGrupa = "";
+function languageRadioChange(myRadio) {
+    var nowaGrupa = document.getElementById('grupa-'+myRadio.getAttribute('language'));
+    nowaGrupa.className = nowaGrupa.className.replace(/\bhidden\b/,'');
+    if (staraGrupa != "") {
+      staraGrupa.className = staraGrupa.className + ' hidden';
+    };
+    
+    staraGrupa = nowaGrupa;
+}
+</script>
